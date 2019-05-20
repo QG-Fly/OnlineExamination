@@ -13,12 +13,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /** Created by HP on 2019/5/14. */
 @Service
 public class UploadService {
-  @Autowired
-  private QuestionDao questionDao;
+  @Autowired private QuestionDao questionDao;
+  private static final int SINGLE_SELECT_COUNT = 4;
+  private static final int MULTI_SELECT_COUNT = 3;
 
   public void analysis(MultipartFile file) throws IOException {
     Workbook wb = null;
@@ -64,5 +69,11 @@ public class UploadService {
       return cell.toString();
     }
     return null;
+  }
+
+  public List<Question> randomSample() {
+    List<Question> single = questionDao.randomSample(SINGLE_SELECT_COUNT, "N");
+    List<Question> multi = questionDao.randomSample(MULTI_SELECT_COUNT, "Y");
+    return Stream.of(single, multi).flatMap(Collection::stream).collect(Collectors.toList());
   }
 }

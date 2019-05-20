@@ -1,11 +1,13 @@
 package com.online.examination.controller;
 
+import com.online.examination.model.Question;
 import com.online.examination.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by HP on 2019/5/13.
@@ -27,5 +29,9 @@ public class UploadController {
             e.printStackTrace();
         }
         return "success";
+    }
+    @GetMapping("/question")
+    public List<Question> randomSample() {
+        return uploadService.randomSample();
     }
 }
