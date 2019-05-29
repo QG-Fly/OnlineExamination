@@ -2,6 +2,7 @@ package com.online.examination.service;
 
 import com.online.examination.dao.QuestionDao;
 import com.online.examination.model.Question;
+import javafx.util.Pair;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,8 +47,10 @@ public class UploadService {
       if (row != null) {
         try {
           Question question = new Question();
+          Pair<String, List<String>> selects = analysisTitleAndAnsw(getCellVal(row.getCell(0)));
           question
-              .title(getCellVal(row.getCell(0)))
+              .title(selects.getKey())
+              .selects(selects.getValue())
               .answer(getCellVal(row.getCell(1)))
               .multiSelect(getCellVal(row.getCell(2)));
           int lastCellIndex = row.getLastCellNum();
@@ -62,6 +66,11 @@ public class UploadService {
         }
       }
     }
+  }
+
+  private Pair<String, List<String>> analysisTitleAndAnsw(String question) {
+    List<String> answs = Arrays.asList(question.split("\n"));
+    return new Pair<>(answs.get(0), answs.subList(1, answs.size()));
   }
 
   private String getCellVal(Cell cell) {
