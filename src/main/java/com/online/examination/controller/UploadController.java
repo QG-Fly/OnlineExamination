@@ -1,5 +1,6 @@
 package com.online.examination.controller;
 
+import com.google.common.base.Preconditions;
 import com.online.examination.model.Question;
 import com.online.examination.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,12 @@ public class UploadController {
         }
         return "success";
     }
-    @GetMapping("/question")
-    public List<Question> randomSample() {
-        return uploadService.randomSample();
-    }
+
+  @GetMapping(value = "/question")
+  public List<Question> randomSample(
+      @RequestParam(name = "type", required = true) String type,
+      @RequestParam(name = "count", required = true) int count) {
+      Preconditions.checkArgument(Question.Type.fromValue(type) !=null ,"param type invalid");
+    return uploadService.randomSample(Question.Type.fromValue(type), count);
+  }
 }

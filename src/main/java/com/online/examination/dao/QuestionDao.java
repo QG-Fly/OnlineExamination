@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface QuestionDao {
     void upsert(Question question);
-    List<Question> randomSample(int total, String multiSelect);
+    List<Question> randomSample(int total, Question.Type type);
 }

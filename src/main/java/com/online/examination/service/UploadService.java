@@ -15,10 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /** Created by HP on 2019/5/14. */
 @Service
@@ -40,8 +37,6 @@ public class UploadService {
     Sheet sheet = wb.getSheetAt(0);
     int firstRowIndex = sheet.getFirstRowNum() + 1;
     int lastRowIndex = sheet.getLastRowNum();
-    System.out.println("firstRowIndex: " + firstRowIndex);
-    System.out.println("lastRowIndex: " + lastRowIndex);
     for (int rIndex = firstRowIndex; rIndex <= lastRowIndex; rIndex++) {
       Row row = sheet.getRow(rIndex);
       if (row != null) {
@@ -51,14 +46,18 @@ public class UploadService {
           question
               .title(selects.getKey())
               .selects(selects.getValue())
-              .answer(getCellVal(row.getCell(1)))
-              .multiSelect(getCellVal(row.getCell(2)));
+              .answer(getCellVal(row.getCell(1)));
+          if (question.getAnswer().length() > 1) {
+            question.setType(Question.Type.MULTI);
+          } else {
+            question.setType(Question.Type.SINGLE);
+          }
           int lastCellIndex = row.getLastCellNum();
           if (lastCellIndex > 3) {
             question
-                .pageNum(getCellVal(row.getCell(3)))
-                .rightRate(getCellVal(row.getCell(4)))
-                .note(getCellVal(row.getCell(5)));
+                .pageNum(getCellVal(row.getCell(2)))
+                .rightRate(getCellVal(row.getCell(3)))
+                .note(getCellVal(row.getCell(4)));
           }
           questionDao.upsert(question);
         } catch (Exception e) {
@@ -80,9 +79,7 @@ public class UploadService {
     return null;
   }
 
-  public List<Question> randomSample() {
-    List<Question> single = questionDao.randomSample(SINGLE_SELECT_COUNT, "N");
-    List<Question> multi = questionDao.randomSample(MULTI_SELECT_COUNT, "Y");
-    return Stream.of(single, multi).flatMap(Collection::stream).collect(Collectors.toList());
+  public List<Question> randomSample(Question.Type type, int count) {
+    return questionDao.randomSample(count, type);
   }
 }

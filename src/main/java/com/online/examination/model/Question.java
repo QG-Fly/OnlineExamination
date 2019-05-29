@@ -9,46 +9,33 @@ public class Question {
   private String title;
   private List<String> selects;
   private String answer;
-  private String multiSelect;
+  private Type type;
   private String pageNum;
   private String rightRate;
   private String note;
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", selects=" + selects +
-                ", answer='" + answer + '\'' +
-                ", multiSelect='" + multiSelect + '\'' +
-                ", pageNum='" + pageNum + '\'' +
-                ", rightRate='" + rightRate + '\'' +
-                ", note='" + note + '\'' +
-                '}';
-    }
+  public Question.Type getType() {
+    return type;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Question question = (Question) o;
-        return Objects.equals(id, question.id) &&
-                Objects.equals(title, question.title) &&
-                Objects.equals(selects, question.selects) &&
-                Objects.equals(answer, question.answer) &&
-                Objects.equals(multiSelect, question.multiSelect) &&
-                Objects.equals(pageNum, question.pageNum) &&
-                Objects.equals(rightRate, question.rightRate) &&
-                Objects.equals(note, question.note);
-    }
+  public void setType(Question.Type type) {
+    this.type = type;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title, selects, answer, multiSelect, pageNum, rightRate, note);
+  public enum Type {
+    MULTI,
+    SINGLE;
+    public static Type fromValue(String type) {
+      for (Type t : Type.values()) {
+        if(t.toString().equalsIgnoreCase(type)) {
+          return t;
+        }
+      }
+      return null;
     }
+  }
 
-    public List<String> getSelects() {
+  public List<String> getSelects() {
         return selects;
     }
 
@@ -86,10 +73,6 @@ public class Question {
     return this;
   }
 
-  public Question multiSelect(String multiSelect) {
-    this.multiSelect = multiSelect;
-    return this;
-  }
 
     public String getId() {
     return id;
@@ -115,12 +98,38 @@ public class Question {
     this.answer = answer;
   }
 
-  public String getMultiSelect() {
-    return multiSelect;
+  @Override
+  public String toString() {
+    return "Question{" +
+            "id='" + id + '\'' +
+            ", title='" + title + '\'' +
+            ", selects=" + selects +
+            ", answer='" + answer + '\'' +
+            ", type=" + type +
+            ", pageNum='" + pageNum + '\'' +
+            ", rightRate='" + rightRate + '\'' +
+            ", note='" + note + '\'' +
+            '}';
   }
 
-  public void setMultiSelect(String multiSelect) {
-    this.multiSelect = multiSelect;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Question question = (Question) o;
+    return Objects.equals(id, question.id) &&
+            Objects.equals(title, question.title) &&
+            Objects.equals(selects, question.selects) &&
+            Objects.equals(answer, question.answer) &&
+            type == question.type &&
+            Objects.equals(pageNum, question.pageNum) &&
+            Objects.equals(rightRate, question.rightRate) &&
+            Objects.equals(note, question.note);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, title, selects, answer, type, pageNum, rightRate, note);
   }
 
   public String getPageNum() {

@@ -29,9 +29,9 @@ public class QuestionDaoImpl implements QuestionDao {
   }
 
   @Override
-  public List<Question> randomSample(int total, String multiSelect) {
+  public List<Question> randomSample(int total, Question.Type type) {
     Aggregation agg =
-        newAggregation(match(Criteria.where("multiSelect").is(multiSelect)), sample(total));
+        newAggregation(match(Criteria.where("type").is(type)), sample(total));
     // Convert the aggregation result into a List
     AggregationResults<Question> groupResults =
         mongoTemplate.aggregate(agg, Question.class, Question.class);
